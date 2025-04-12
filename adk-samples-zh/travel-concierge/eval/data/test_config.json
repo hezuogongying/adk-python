@@ -1,0 +1,75 @@
+
+[
+  {
+    "query": "转移到行前准备模式", // 指令，用于强制 Agent 进入 pre_trip 状态
+    "expected_tool_use": [
+      {
+        "tool_name": "transfer_to_agent",
+        "tool_input": {
+          "agent_name":"pre_trip_agent" // 预期转移到 pre_trip_agent
+        }
+      }
+    ],
+    "expected_intermediate_agent_responses" : [], // 预期没有中间回复
+    // 预期 pre_trip_agent 的初始回复，确认行程信息
+    "reference": "好的，我现在是行前准备 Agent。我看到您计划于 2025 年 6 月 15 日至 2025 年 6 月 17 日从圣地亚哥前往西雅图。我还看到您是美国公民。"
+  },
+  {
+    "query": "更新信息", // 指令，要求 Agent 获取最新的行前信息
+    "expected_tool_use": [
+      // 预期 pre_trip_agent 会调用 Google Search 工具查询以下信息
+      {
+        "tool_name": "google_search_grounding",
+        "tool_input": {
+          // 查询美国公民从圣地亚哥到西雅图的签证要求
+          "request":"visa_requirements for a US Citizen traveling from San Diego to Seattle"
+        }
+      },
+      {
+        "tool_name": "google_search_grounding",
+        "tool_input": {
+          // 查询从圣地亚哥到西雅图的医疗要求
+          "request":"medical_requirements for travel from San Diego to Seattle"
+        }
+      },
+      {
+        "tool_name": "google_search_grounding",
+        "tool_input": {
+          // 查询西雅图六月份的风暴监测信息
+          "request":"storm_monitor for Seattle in June"
+        }
+      },
+      {
+        "tool_name": "google_search_grounding",
+        "tool_input": {
+          // 查询西雅图的旅行建议
+          "request":"travel_advisory for Seattle"
+        }
+      },
+      // 预期 pre_trip_agent 会调用 what_to_pack_agent 工具
+      {
+        "tool_name": "what_to_pack_agent",
+        "tool_input": {
+          // 请求六月份去西雅图的打包建议
+          "request":"Seattle in June"
+        }
+      }
+    ],
+    // 预期 Agent 在调用完所有工具后，在最终回复前可能产生的中间思考或总结
+    "expected_intermediate_agent_responses" : [
+      "- **签证：** 作为美国公民，从圣地亚哥前往西雅图旅行，您不需要签证。但是，从 2025 年 5 月 7 日起，您将需要符合 REAL ID 标准的驾照或其他可接受的身份证明（如护照）才能乘坐国内航班。",
+      "- **医疗：** 确保您持有符合 REAL ID 标准的驾照或其他可接受的身份证明，如美国护照。请向您的航空公司查询任何具体要求。",
+      "- **风暴更新：** 我无法具体监控风暴。",
+      "- **旅行建议：** 西雅图通常是安全的，但在旅游区要注意轻微犯罪，并采取正常的安全预防措施。",
+      "- **打包建议：** 我建议带上一件轻便夹克、雨伞、舒适的步行鞋和多层衣物。"
+      // 注意：这些是模拟的中间步骤或工具的直接输出，最终回复会整合这些信息。
+    ],
+    // 预期 pre_trip_agent 在获取并处理完所有信息后的最终回复
+    "reference": "以下是您旅行的重要信息：\n\n- **签证：** 作为美国公民，从圣地亚哥到西雅图进行国内旅行，您不需要签证。\n- **医疗：** 确保您的常规疫苗接种是最新的，包括流感疫苗，并就任何个人医疗问题或必要的处方续配咨询您的医生。\n- **风暴更新：** 六月份西雅图天气温和，平均最高气温从 69°F 升至 74°F，请为本月大约 8 天的降雨做好准备。\n- **旅行建议：** 要获取西雅图最新的旅行警报和建议，请查阅 SDOT 博客以获取有关施工、活动和交通的信息，并查看华盛顿州旅游网站以获取与交通、野火和自然影响相关的警报。\n- **打包建议：** 我建议带上一件轻便夹克、雨伞、舒适的步行鞋和多层衣物。\n"
+  }
+]
+```
+**文件说明:** 这是 Travel Concierge Agent 在“行前准备 (pre-trip)”阶段的评估数据集。它包含用户在旅行开始前可能提出的查询（例如，“更新信息”）。测试用例检查 Agent 是否能正确调用 `google_search_grounding` 工具查询签证、医疗、天气、旅行建议等信息，并调用 `what_to_pack_agent` 获取打包建议，最后将所有信息汇总成一个清晰的摘要给用户。数据集使用了 `itinerary_seattle_example.json` 作为初始状态。
+
+---
+

@@ -1,0 +1,40 @@
+
+{
+  "state": { // 会话状态对象
+    "user_profile" : { // 用户个人资料
+      "passport_nationality" : "US Citizen", // 护照国籍
+      "seat_preference": "window", // 座位偏好
+      "food_preference": "vegan", // 食物偏好
+      "allergies": [], // 过敏源列表
+      "likes": [], // 喜欢的事物列表
+      "dislikes": [], // 不喜欢的事物列表
+      "price_sensitivity": [], // 价格敏感度（例如 low, medium, high）
+      "home": // 家庭住址信息
+      {
+          "event_type": "home", // 事件类型
+          "address": "6420 Sequence Dr #400, San Diego, CA 92121, United States", // 地址
+          "local_prefer_mode": "drive" // 本地偏好交通方式
+      }
+    },
+    "itinerary": {}, // 行程对象（初始为空）
+    "origin" : "", // 行程起点（初始为空）
+    "destination" : "", // 行程目的地（初始为空）
+    "start_date" : "", // 开始日期（初始为空）
+    "end_date" : "", // 结束日期（初始为空）
+    "outbound_flight_selection" : "", // 出发航班选择（初始为空）
+    "outbound_seat_number" : "", // 出发航班座位号（初始为空）
+    "return_flight_selection" : "", // 返程航班选择（初始为空）
+    "return_seat_number" : "", // 返程航班座位号（初始为空）
+    "hotel_selection" : "", // 酒店选择（初始为空）
+    "room_selection" : "", // 房间选择（初始为空）
+    "poi" : "", // 兴趣点信息（初始为空）
+    "itinerary_datetime" : "", // 当前（模拟）行程中的日期时间（初始为空）
+    "itinerary_start_date" : "", // 行程开始日期（从 itinerary 推断，初始为空）
+    "itinerary_end_date" : "" // 行程结束日期（从 itinerary 推断，初始为空）
+  }
+}
+```
+**文件说明:** 这是一个 JSON 文件，定义了 Travel Concierge Agent 的默认初始会话状态。它包含一个空的用户个人资料结构和一个空的行程对象，以及其他与行程相关的状态变量，初始值都为空字符串或空对象/列表。这个文件通常在评估或新会话开始时加载，为 Agent 提供一个干净的起点。
+
+---
+

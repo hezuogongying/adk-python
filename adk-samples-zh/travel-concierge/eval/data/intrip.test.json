@@ -1,0 +1,57 @@
+
+[
+  {
+    "query": "给我一些关于美洲的旅行灵感", // 用户查询
+    "expected_tool_use": [ // 预期工具使用
+      {
+        "tool_name": "transfer_to_agent", // 预期调用 transfer_to_agent 工具
+        "tool_input": {
+          "agent_name":"inspiration_agent" // 预期转移到 inspiration_agent
+        }
+      },
+      {
+        "tool_name": "place_agent", // 预期调用 place_agent 工具
+        "tool_input": {
+          "request":"Americas" // 预期传递给 place_agent 的请求
+        }
+      }
+    ],
+    // 参考回答
+    "reference": "好的，我为您准备了一些想法！您觉得这些怎么样：\n\n*   **秘鲁，马丘比丘：** 坐落在安第斯山脉高处的一座古老的印加城堡。\n*   **加拿大，班夫国家公园：** 拥有雄伟的山脉和碧绿的湖泊。\n*   **美国，纽约市：** 一个标志性的大都市，拥有世界级的博物馆和多样化的美食。\n\n这些目的地中是否有您特别感兴趣的？我可以提供更多关于活动和景点的详细信息。\n"
+  },
+  {
+    "query": "告诉我更多在秘鲁可以做什么",
+    "expected_tool_use": [
+      {
+        "tool_name": "poi_agent", // 预期调用 poi_agent 工具
+        "tool_input": {
+          "request":"Peru" // 预期传递给 poi_agent 的请求
+        }
+      },
+      {
+        "tool_name": "map_tool", // 预期调用 map_tool 工具
+        "tool_input": {
+          "key": "poi" // 预期 map_tool 处理 state['poi'] 中的数据
+        }
+      }
+    ],
+    "reference": "秘鲁是一个拥有不可思议的历史和自然美景的地方！您可以：\n\n*   **探索马丘比丘：** 徒步穿越标志性的印加城堡，惊叹于其建筑天才。\n*   **参观彩虹山：** 徒步穿越充满活力、色彩缤纷的景观。\n*   **探索的的喀喀湖：** 探索南美洲最高的通航湖泊，参观独特的乌鲁斯浮岛。\n*   **探索萨克塞瓦曼：** 漫步于这座拥有巨大石墙的印加堡垒。\n*   **飞越纳斯卡线条：** 乘坐飞机观赏蚀刻在沙漠沙地上的神秘地画。\n\n考虑到您的素食偏好，您会很高兴知道秘鲁的许多餐厅都提供素食选择，尤其是在库斯科和利马这样的大城市。\n\n这些活动中哪一个听起来最吸引您？或者您对秘鲁还有其他好奇的地方吗？\n"
+  },
+  {
+    "query": "开始计划吧",
+    "expected_tool_use": [
+      {
+        "tool_name": "transfer_to_agent", // 预期调用 transfer_to_agent 工具
+        "tool_input": {
+          "agent_name":"planning_agent" // 预期转移到 planning_agent
+        }
+      }
+    ],
+    "reference": "好的，让我们开始计划您的秘鲁之旅吧！根据您对秘鲁的兴趣，我将围绕马丘比丘、彩虹山、的的喀喀湖、萨克塞瓦曼和纳斯卡线条来规划行程。\n\n首先，我需要更多信息来创建完美的行程。\n\n*   **出发地：** 您将从哪里出发？\n*   **开始日期：** 您希望何时开始您的旅行？\n*   **结束日期：** 您希望您的旅行持续多少天？\n"
+  }
+]
+```
+**文件说明:** 这是 Travel Concierge Agent 在“灵感 (inspire)”阶段的评估数据集。它包含用户可能提出的关于旅行灵感的查询，以及预期的 Agent 行为（转移到 `inspiration_agent`，调用 `place_agent` 或 `poi_agent`）和参考回答。
+
+---
+

@@ -1,0 +1,13 @@
+
+{
+    "criteria": {
+      // 工具轨迹平均得分的评估标准
+      "tool_trajectory_avg_score": 1.0 // 要求工具使用的平均得分达到 1.0（表示完全符合预期）
+    }
+  }
+```
+
+**文件说明:** 这是 ADK 评估配置文件 (`test_config.json`)，用于定义评估运行时的通过标准。这里指定了 `tool_trajectory_avg_score` 必须达到 1.0 才算通过。
+
+---
+

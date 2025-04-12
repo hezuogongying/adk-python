@@ -1,0 +1,261 @@
+
+[
+  {
+    "query": "你好，我有一些关于 Alphabet 10-K 报告的问题。", // 用户查询
+    "expected_tool_use": [], // 预期工具使用（无）
+    // 参考回答
+    "reference": "你好！我可以帮忙。根据 Alphabet 截至 2024 年 12 月 31 日的财年 10-K 报告，您想了解什么？"
+  },
+  {
+    "query": "根据 MD&A（管理层讨论与分析），像 Google Cloud 和设备这样的非广告来源收入占比不断增加，可能会如何影响 Alphabet 的整体运营利润率？为什么？",
+    "expected_tool_use": [ // 预期工具使用
+      {
+        "tool_name": "retrieve_rag_documentation", // 工具名称
+        "tool_input": { // 工具输入
+          "query": "非广告收入的增长如何影响 Alphabet 的利润率？" // 传递给 RAG 工具的查询
+        }
+      }
+    ],
+    // 参考回答（包含引文）
+    "reference": "报告指出，来自云、消费者订阅、平台和设备的收入正在增加。报告提到，这些收入的利润率差异很大，并且通常低于广告利润率。特别是，由于定价压力和较高的销售成本，设备销售对合并利润率产生不利影响。因此，这一趋势可能会对整体运营利润率施加下行压力。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 7 项]"
+  },
+  {
+    "query": "报告提到了对人工智能的大量投资。这些人工智能投资与公司对未来资本支出的预期之间有何具体联系？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "Alphabet 的人工智能战略与资本支出预测之间的关系"
+        }
+      }
+    ],
+    "reference": "报告明确指出，预计资本支出将会增加，包括预期支出和增加的技术基础设施投资，*特别是*为了支持人工智能产品和服务。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 7 项和关于前瞻性陈述的说明]"
+  },
+  {
+    "query": "除了基本的功能问题，Alphabet 在其风险因素中指出了哪些因人工智能的开发和使用而可能产生的具体法律、道德或社会挑战？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "Alphabet 将哪些道德和法律风险与人工智能联系起来？"
+        }
+      }
+    ],
+    "reference": "提及的风险包括有害内容、不准确性、歧视、知识产权侵权/盗用、侵犯公开权、诽谤、数据隐私、网络安全问题，以及可能影响人权、隐私、就业或其他社会问题的意外后果或用途。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 1A 项]"
+  },
+  {
+    "query": "报告详细说明了几项正在进行的反垄断调查和诉讼。综合所提供的信息，哪些共同的主题或业务领域似乎是监管审查的主要焦点？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "Alphabet 的哪些业务领域面临最多的反垄断审查？"
+        }
+      }
+    ],
+    "reference": "监管审查的共同主题集中在搜索和搜索广告分发/实践、广告技术（广告技术栈）、Android 操作系统分发协议以及 Google Play 商店运营（计费、费用、商业模式）。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 1A 项和附注 10]"
+  },
+  {
+    "query": "Alphabet 如何核算其非上市股权证券的投资？根据附注 1，哪些具体事件会触发对其账面价值的调整？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "Alphabet 对非上市股权证券的会计政策"
+        }
+      }
+    ],
+    "reference": "它们主要根据计量替代方法（成本减去减值，+/- 调整）进行核算。账面价值的调整由同一发行人相同或类似投资在有序交易中的可观察价格变动或识别出减值时触发。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，附注 1 和附注 3]"
+  },
+  {
+    "query": "虽然 Google Cloud 的营业收入在 2024 年转正并显著增长，但 MD&A 中提到的哪些因素部分抵消了收入增长并减缓了盈利能力的提升？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "限制 Google Cloud 2024 年盈利增长的因素"
+        }
+      }
+    ],
+    "reference": "营业收入的增加部分被技术基础设施使用成本的增加以及员工薪酬费用的增加（主要由员工人数增长驱动）所抵消。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 7 项，分部盈利能力]"
+  },
+  {
+    "query": "解释 Alphabet 的“其他收入（支出），净额”从 2023 年的 14 亿美元大幅增加到 2024 年的 74 亿美元的主要原因。",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "推动 Alphabet 2024 年其他收入（支出），净额变化的因素"
+        }
+      }
+    ],
+    "reference": "增加的主要原因是股权证券的净收益增加（主要是由公允价值调整驱动的非上市股权证券的未实现收益）以及与上一年相比外汇净损失的减少。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 7 项，其他收入（支出），净额和附注 7]"
+  },
+  {
+    "query": "哪些关键因素导致 Alphabet 的有效税率从 2023 年的 13.9% 上升到 2024 年的 16.4%？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "为什么 Alphabet 的有效税率在 2024 年增加了？"
+        }
+      }
+    ],
+    "reference": "增加的主要原因是 2023 年针对 IRS 税收规则变更（与外国税收抵免和研发资本化相关）进行的一次性调整（这降低了 2023 年的税率），加上 2024 年美国联邦外国衍生无形收入扣除额的减少。这部分被 2024 年较高的股票薪酬税收优惠所抵消。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 7 项，所得税拨备和附注 14]"
+  },
+  {
+    "query": "关于司法部针对搜索的反垄断诉讼，法院在 2024 年 8 月的裁决是什么？报告中概述的后续步骤有哪些？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "司法部针对 Google 的搜索反垄断案的状态和裁决"
+        }
+      }
+    ],
+    "reference": "美国哥伦比亚特区地方法院裁定 Google 在搜索和搜索广告方面违反了反垄断法。正在进行单独的程序以确定补救措施。Alphabet 打算在补救决定后提出上诉。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 1A 项和附注 10]"
+  },
+  {
+    "query": "Alphabet 承认在实现其雄心勃勃的 2030 年可持续发展目标（净零排放和 24/7 CFE）方面存在哪些潜在挑战？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "Alphabet 在实现其气候目标方面预见到哪些不确定性或困难？"
+        }
+      }
+    ],
+    "reference": "挑战包括道路并非一帆风顺或呈线性，大规模基础设施的交付周期长，存在显著的不确定性（例如，人工智能未来的环境影响），依赖于新技术的发展（Alphabet 和能源部门），以及预计总温室气体排放量在趋向目标下降之前可能会上升。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 1 项]"
+  },
+  {
+    "query": "根据风险因素中提到的，Alphabet 的股票回购计划可能如何影响其创始人 Larry Page 和 Sergey Brin 持有的相对投票控制权？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "Alphabet 股票回购对创始人投票权的影响"
+        }
+      }
+    ],
+    "reference": "关于所有权集中的风险因素明确指出，股票回购“也可能影响 Larry 和 Sergey 的相对投票权”。通过回购投票权较低的 A 类股或无投票权的 C 类股，他们持有的高投票权 B 类股的比例投票权相对于其他类别增加。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 1A 项]"
+  },
+  {
+    "query": "由于存在显著的不确定性并可能对财务结果产生重大影响，Alphabet 将哪些会计估计确定为“关键”？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "Alphabet 确定的关键会计估计是什么？"
+        }
+      }
+    ],
+    "reference": "确定的关键会计估计是：非上市股权证券的公允价值计量；财产和设备（使用寿命评估）；所得税（不确定税收头寸的评估）；以及损失或有事项（损失的可能性和估计）。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 7 项]"
+  },
+  {
+    "query": "描述 Alphabet 使用衍生金融工具的策略，包括对冲的风险类型和应用的会计指定。",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "描述 Alphabet 的衍生品对冲策略和会计处理"
+        }
+      }
+    ],
+    "reference": "Alphabet 使用衍生品（主要是外汇合约）来管理外汇风险。他们将合约指定为：用于预测收入的现金流量对冲；用于某些外币有价证券的公允价值对冲；以及用于外国子公司投资的净投资对冲。非指定衍生品用于其他风险敞口，如公司间交易和投资目的。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，附注 3 和第 7A 项]"
+  },
+  {
+    "query": "截至 2024 年底，Alphabet 932 亿美元的收入积压中，主要构成是什么？预计大约一半的金额将在多长时间内确认？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "Alphabet 收入积压构成和确认期的详细信息"
+        }
+      }
+    ],
+    "reference": "收入积压主要与 Google Cloud 对尚未确认为收入的未来服务的承诺有关。预计大约一半的积压将在未来 24 个月内确认为收入。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，附注 2]"
+  },
+  {
+    "query": "分析 2023 年至 2024 年 Google Services 营业收入的变化。主要的积极驱动因素是什么？哪些成本部分抵消了增长？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "分析 2024 年 Google Services 营业收入变化"
+        }
+      }
+    ],
+    "reference": "Google Services 营业收入增加了 254 亿美元。这主要是由收入增加驱动的。部分抵消这一增长的因素包括内容获取成本和流量获取成本（TAC）的增加。员工薪酬费用的减少也对收入增长做出了积极贡献。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 7 项，分部盈利能力]"
+  },
+  {
+    "query": "报告在其分部报告中提到了“Alphabet 层面活动”。哪些类型的成本通常包含在此类别中，并且不分配给主要分部？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "Alphabet 层面活动包括哪些成本？"
+        }
+      }
+    ],
+    "reference": "Alphabet 层面活动中包含的成本主要包括某些以人工智能为重点的共享研发（如通用 AI 模型开发）、公司倡议（如慈善事业）、公司共享成本（一些财务、人力资源、法律职能、某些罚款/和解）、与员工遣散和办公空间优化相关的费用（在 2023/2024 年期间），以及与收入相关的对冲收益/损失。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，附注 15 和第 7 项]"
+  },
+  {
+    "query": "对比 2024 年 Google Search 及其他业务中“付费点击量”与“每次点击成本”的同比百分比变化。这对于该领域的变现趋势有何启示？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "比较 2024 年 Google Search 的付费点击量和每次点击成本增长"
+        }
+      }
+    ],
+    "reference": "对于 Google Search 及其他业务，2024 年与 2023 年相比，付费点击量增加了 5%，而每次点击成本增加了 7%。这表明，在这一年中，这些资产每次点击产生的平均收入增长速度略快于点击量的增长速度。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 7 项，变现指标]"
+  },
+  {
+    "query": "用于某些非上市股权证券的“计量替代”会计方法的目的是什么？它与每个期间纯粹基于估计公允价值进行市值计价有何不同？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "解释股权证券的“计量替代”会计方法"
+        }
+      }
+    ],
+    "reference": "计量替代方法将这些证券按成本减去减值，加上或减去*仅*由同一发行人相同或类似投资在有序交易中的可观察价格变动产生的调整来计量。这与每个期间基于估计公允价值进行市值计价（如公开股票）不同，因为计量替代方法下的调整仅在发生特定可观察事件或减值时发生，从而减少了期间波动，除非发生此类事件。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，附注 1 和附注 3]"
+  },
+  {
+    "query": "根据关于竞争的讨论，除了其他搜索引擎之外，哪些类型的公司或服务对 Google 的通用搜索引擎构成了竞争威胁？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "除其他搜索引擎外，Google Search 面临哪些类型的竞争对手？"
+        }
+      }
+    ],
+    "reference": "提及的竞争威胁包括垂直搜索引擎和电子商务提供商（用户直接导航）、在线广告平台和网络（包括在线购物和流媒体服务）、社交网络（用于产品/服务推荐）以及数字助理提供商。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，第 1 项]"
+  },
+  {
+    "query": "Alphabet 如何评估其长期资产（如财产设备和经营租赁资产）的可收回性？如果资产被视为减值，会发生什么？",
+    "expected_tool_use": [
+      {
+        "tool_name": "retrieve_rag_documentation",
+        "tool_input": {
+          "query": "Alphabet 测试长期资产减值的流程"
+        }
+      }
+    ],
+    "reference": "当事件表明账面金额可能无法收回时，Alphabet 会审查长期资产是否存在减值。通过将账面金额与资产或资产组预计产生的*未来未折现现金流量*进行比较来评估可收回性。如果账面价值不可收回，则确认减值损失，计量为账面价值超过资产*公允价值*的金额。[引文：基于 Alphabet 2024 年 12 月 31 日财年 10-K，附注 1]"
+  },
+  {
+    "query": "暂时就这些问题了。谢谢！",
+    "expected_tool_use": [],
+    "reference": "不客气！很高兴能帮到您。如果还有其他问题，随时提问。"
+  }
+]
+```
+
+**文件说明:** 这是 RAG Agent 的对话评估数据集文件 (`conversation.test.json`)。它包含一系列用户查询和对应的预期 Agent 行为（是否使用工具、使用哪个工具、传递什么参数）以及理想的参考回答。这用于评估 Agent 在多轮对话中理解用户意图、正确使用 RAG 工具以及生成相关、准确并带有引文的回答的能力。
+
+---
+

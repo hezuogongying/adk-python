@@ -1,0 +1,23 @@
+
+[
+  {
+    "query": "hi,", // 用户输入：简单问候
+    "expected_tool_use": [], // 预期无工具使用
+    // 预期 Agent 回复：标准问候，识别回头客
+    "reference": "您好！欢迎回到 Cymbal Home & Garden！我看到您是回头客。今天有什么可以帮您让您的家和花园更美好吗？"
+  },
+  {
+    "query": "告诉我我的购物车里有什么？", // 用户输入：查询购物车
+    "expected_tool_use": [ // 预期使用工具：访问购物车信息
+      {
+        "tool_name": "access_cart_information", // 工具名称
+        "tool_input": {
+          "customer_id": "123" // 输入：客户 ID
+        }
+      }
+    ],
+    // 预期 Agent 回复：列出购物车内容
+    "reference": "您的购物车里有一袋标准盆栽土和一个通用肥料容器。"
+  }
+]
+

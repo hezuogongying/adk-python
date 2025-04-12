@@ -1,0 +1,202 @@
+
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Travel Concierge 的部署脚本。"""
+
+import os
+
+from absl import app, flags # 用于命令行参数解析
+from dotenv import load_dotenv # 加载 .env 文件
+from travel_concierge.agent import root_agent # 导入 Travel Concierge 的根 Agent
+import vertexai
+from vertexai import agent_engines # 导入 Vertex AI Agent Engine 相关库
+from vertexai.preview.reasoning_engines import AdkApp # 导入 ADK 应用包装器
+
+FLAGS = flags.FLAGS
+# 定义命令行标志
+flags.DEFINE_string("project_id", None, "GCP 项目 ID。")
+flags.DEFINE_string("location", None, "GCP 位置。")
+flags.DEFINE_string("bucket", None, "GCP 存储桶名称（不含 gs:// 前缀）。")
+
+flags.DEFINE_string(
+    "initial_states_path",
+    None,
+    "初始状态文件的相对路径，例如 eval/itinerary_empty_default.json",
+)
+flags.DEFINE_string("map_key", None, "Google Places API 的 API 密钥")
+
+flags.DEFINE_string("resource_id", None, "ReasoningEngine (Agent Engine) 资源 ID。")
+flags.DEFINE_bool("create", False, "创建一个新的部署。")
+flags.DEFINE_bool("quicktest", False, "尝试使用单轮对话测试新部署。")
+flags.DEFINE_bool("delete", False, "删除一个现有的部署。")
+# 标记 create, delete, quicktest 为互斥标志
+flags.mark_bool_flags_as_mutual_exclusive(["create", "delete", "quicktest"])
+
+
+def create(env_vars: dict[str, str]) -> None:
+    """创建一个新的部署。
+
+    Args:
+        env_vars: 需要传递给部署环境的环境变量字典。
+    """
+    print("传递给部署环境的环境变量:", env_vars)
+    # 创建 AdkApp 实例
+    app = AdkApp(
+        agent=root_agent, # 要部署的 Agent
+        enable_tracing=True, # 启用追踪
+        env_vars=env_vars, # 设置环境变量
+    )
+
+    # 创建并部署 Agent Engine
+    remote_agent = agent_engines.create(
+        app,
+        # 指定部署所需的 Python 依赖
+        requirements=[
+            "google-adk (>=0.0.2)",
+            # 注意：这里使用了 git 仓库的特定提交，可能需要根据实际情况调整
+            "google-cloud-aiplatform[agent_engines] @ git+https://github.com/googleapis/python-aiplatform.git@copybara_738852226",
+            "google-genai (>=1.5.0,<2.0.0)",
+            "pydantic (>=2.10.6,<3.0.0)",
+            "absl-py (>=2.2.1,<3.0.0)",
+            "pydantic (>=2.10.6,<3.0.0)", # pydantic 重复了，可以移除一个
+            "requests (>=2.32.3,<3.0.0)",
+        ],
+        # 指定需要一起打包上传的本地 Python 包
+        extra_packages=[
+            "./travel_concierge",  # 主包
+            "./eval",  # 包含初始状态文件的 eval 包
+        ],
+    )
+    print(f"创建的远程 Agent: {remote_agent.resource_name}")
+
+
+def delete(resource_id: str) -> None:
+    """删除一个现有的部署。
+
+    Args:
+        resource_id: 要删除的 Agent Engine 的资源 ID。
+    """
+    remote_agent = agent_engines.get(resource_id) # 获取 Agent Engine 实例
+    remote_agent.delete(force=True) # 强制删除
+    print(f"已删除远程 Agent: {resource_id}")
+
+
+def send_message(resource_id: str, message: str) -> None:
+    """向已部署的 Agent 发送消息。
+
+    Args:
+        resource_id: Agent Engine 的资源 ID。
+        message: 要发送给 Agent 的消息文本。
+    """
+    remote_agent = agent_engines.get(resource_id) # 获取 Agent Engine 实例
+    # 创建一个新会话（可选地可以提供初始状态）
+    session = remote_agent.create_session(
+        user_id="traveler0115" # 指定用户 ID
+    )
+    print(f"尝试连接远程 Agent: {resource_id}")
+    # 使用 stream_query 进行流式查询
+    for event in remote_agent.stream_query(
+        user_id="traveler0115", # 用户 ID
+        session_id=session["id"], # 会话 ID
+        message=message, # 发送的消息
+    ):
+        print(event) # 打印从 Agent 返回的事件
+    print("完成。")
+
+
+def main(argv: list[str]) -> None:
+    """脚本主入口点。"""
+
+    load_dotenv() # 加载 .env 文件
+    env_vars = {} # 用于存储传递给部署环境的环境变量
+
+    # 获取配置，优先使用命令行标志，其次是环境变量
+    project_id = (
+        FLAGS.project_id if FLAGS.project_id else os.getenv("GOOGLE_CLOUD_PROJECT")
+    )
+    location = FLAGS.location if FLAGS.location else os.getenv("GOOGLE_CLOUD_LOCATION")
+    # 注意：这里需要存储桶名称，而不是完整的 gs:// 路径
+    bucket_name = FLAGS.bucket if FLAGS.bucket else os.getenv("GOOGLE_CLOUD_STORAGE_BUCKET")
+    bucket = f"gs://{bucket_name}" if bucket_name else None # 构造完整的 GCS 路径
+
+    # Travel Concierge 特定的环境变量
+    initial_states_path = (
+        FLAGS.initial_states_path
+        if FLAGS.initial_states_path
+        else os.getenv("TRAVEL_CONCIERGE_SCENARIO")
+    )
+    env_vars["TRAVEL_CONCIERGE_SCENARIO"] = initial_states_path # 设置初始状态文件路径
+    map_key = (
+        # 修正：这里应该是 FLAGS.map_key
+        FLAGS.map_key
+        if FLAGS.map_key
+        else os.getenv("GOOGLE_PLACES_API_KEY")
+    )
+    env_vars["GOOGLE_PLACES_API_KEY"] = map_key # 设置 Places API 密钥
+
+    # 打印配置信息（注意隐藏部分 API 密钥）
+    print(f"项目 (PROJECT): {project_id}")
+    print(f"位置 (LOCATION): {location}")
+    print(f"存储桶 (BUCKET): {bucket}")
+    print(f"初始状态 (INITIAL_STATE): {initial_states_path}")
+    print(f"地图密钥 (MAP): {map_key[:5]}..." if map_key else "未设置")
+
+    # 检查必要的配置是否存在
+    if not project_id:
+        print("缺少必要的环境变量: GOOGLE_CLOUD_PROJECT")
+        return
+    elif not location:
+        print("缺少必要的环境变量: GOOGLE_CLOUD_LOCATION")
+        return
+    elif not bucket:
+        print("缺少必要的环境变量: GOOGLE_CLOUD_STORAGE_BUCKET")
+        return
+    elif not initial_states_path:
+        print("缺少必要的环境变量: TRAVEL_CONCIERGE_SCENARIO")
+        return
+    elif not map_key:
+        print("缺少必要的环境变量: GOOGLE_PLACES_API_KEY")
+        return
+
+    # 初始化 Vertex AI SDK
+    vertexai.init(
+        project=project_id,
+        location=location,
+        staging_bucket=bucket, # 使用完整的 gs:// 路径
+    )
+
+    # 根据命令行标志执行相应操作
+    if FLAGS.create:
+        create(env_vars) # 创建部署
+    elif FLAGS.delete:
+        if not FLAGS.resource_id:
+            print("删除操作需要提供 resource_id")
+            return
+        delete(FLAGS.resource_id) # 删除部署
+    elif FLAGS.quicktest:
+        if not FLAGS.resource_id:
+            print("快速测试需要提供 resource_id")
+            return
+        # 发送一条测试消息
+        send_message(FLAGS.resource_id, "寻找美洲附近的灵感")
+    else:
+        # 如果没有指定 create, delete 或 quicktest
+        print("未知命令。请使用 --create, --delete 或 --quicktest 标志。")
+
+
+if __name__ == "__main__":
+    app.run(main) # 运行 absl 应用
+
+

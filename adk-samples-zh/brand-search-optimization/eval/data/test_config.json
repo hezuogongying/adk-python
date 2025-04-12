@@ -1,0 +1,126 @@
+
+[
+  {
+    "name": "eval_data_set_google_shopping", // 评估数据集名称：Google Shopping 场景
+    "data": [ // 评估数据列表，包含多个对话轮次
+      {
+        "query": "hello", // 用户输入
+        "expected_tool_use": [], // 预期工具使用（本轮无）
+        "expected_intermediate_agent_responses": [], // 预期中间 Agent 响应（本轮无）
+        "reference": "您好！为了开始，您能提供您想优化的品牌名称吗？" // 预期 Agent 回复
+      },
+      {
+        "query": "BSOAgentTestBrand", // 用户输入：品牌名称
+        "expected_tool_use": [ // 预期工具使用
+          {
+            "tool_name": "transfer_to_agent", // 工具：转移到 Agent
+            "tool_input": {
+              "agent_name": "keyword_finding_agent" // 输入：目标 Agent 名称
+            }
+          },
+          {
+            "tool_name": "get_product_details_for_brand", // 工具：获取品牌产品详情
+            "tool_input": {} // 输入：（通常由 Agent 自动填充品牌名称）
+          }
+        ],
+        "expected_intermediate_agent_responses": [ // 预期中间 Agent 响应
+          {
+            "author": "brand_search_optimization", // 发言者：根 Agent
+            "text": "好的，太好了。既然我已经有了品牌名称，我将首先查找一些相关的关键词。\n\n" // 响应文本
+          }
+        ],
+        // 预期最终 Agent 回复（来自 keyword_finding_agent）
+        "reference": "| 标题           | 描述                                                                                                | 属性                         | 品牌              |\n|----------------|---------------------------------------------------------------------------------------------------------------------|------------------------------|-------------------|\n| 儿童慢跑鞋     | 舒适且支撑性强的跑鞋，适合活泼的孩子。透气网眼鞋面保持脚部凉爽，耐用的外底提供出色的抓地力。                   | 尺码: 10 幼儿, 颜色: 蓝色/绿色 | BSOAgentTestBrand |\n| 闪光运动鞋     | 有趣时尚的运动鞋，带有孩子们会喜欢的闪光功能。支撑性强，舒适适合全天玩耍。                                             | 尺码: 13 幼儿, 颜色: 银色   | BSOAgentTestBrand |\n| 校鞋           | 多功能舒适的鞋子，非常适合在学校日常穿着。耐用的结构，具有支撑性设计。                                                 | 尺码: 12 学龄前, 颜色: 黑色  | BSOAgentTestBrand |\n\n以下是购物者可能会使用的一些关键词：\n\n*   跑鞋\n*   运动鞋\n*   童鞋\n*   休闲鞋\n*   闪光运动鞋\n*   校鞋\n*   幼儿鞋\n*   学龄前鞋\n*   慢跑鞋\n*   儿童慢跑鞋\n\n这是排名后的列表\n\n| 关键词          |\n|-----------------|\n| 跑鞋            |\n| 运动鞋          |\n| 童鞋            |\n| 休闲鞋          |\n| 闪光运动鞋      |\n| 校鞋            |\n| 幼儿鞋          |\n| 学龄前鞋        |\n| 慢跑鞋          |\n| 儿童慢跑鞋      |\n"
+      },
+      {
+        "query": "你能搜索网站吗", // 用户输入
+        "expected_tool_use": [ // 预期工具使用
+          {
+            "tool_name": "transfer_to_agent", // 工具：转移到 Agent
+            "tool_input": {
+              "agent_name": "search_results_agent" // 输入：目标 Agent 名称
+            }
+          }
+        ],
+        "expected_intermediate_agent_responses": [ // 预期中间 Agent 响应
+          {
+            "author": "keyword_finding_agent", // 发言者：关键词查找 Agent
+            "text": "我的设计目的是根据产品详情为指定品牌查找关键词。要搜索网站信息，我需要将您转移到另一个 Agent。您想让我这样做吗？\n" // 响应文本
+          }
+        ],
+        "reference": "您想访问哪个网站？\n" // 预期 Agent 回复（来自 search_results_agent）
+      },
+      {
+        "query": "google shopping", // 用户输入：网站名称
+        "expected_tool_use": [], // 预期工具使用（无）
+        "expected_intermediate_agent_responses": [], // 预期中间 Agent 响应（无）
+        "reference": "您在寻找哪个关键词？\n" // 预期 Agent 回复
+      },
+      {
+        "query": "童鞋", // 用户输入：关键词
+        "expected_tool_use": [ // 预期工具使用
+          {
+            "tool_name": "go_to_url", // 工具：访问 URL
+            "tool_input": {
+              "url": "https://www.google.com/search?q=kids shoes" // 输入：搜索 URL
+            }
+          },
+          {
+            "tool_name": "click_element_with_text", // 工具：点击带文本的元素
+            "tool_input": {
+              "text": "Shopping" // 输入：要点击的文本
+            }
+          },
+          {
+            "tool_name": "get_page_source", // 工具：获取页面源代码
+            "tool_input": {} // 输入：（无）
+          }
+        ],
+        "expected_intermediate_agent_responses": [], // 预期中间 Agent 响应（无）
+        // 预期 Agent 回复（提取并格式化了搜索结果）
+        "reference": "好的，我已经分析了网页，以下是与您的搜索查询匹配的前 3 个产品：\n\n*   **Nike Kids' Flex Runner 3 Shoes**\n*   **Kids adidas Racer TR23 Shoes Kids**\n*   **Nike Kids' Court Borough Low Recraft Shoes**\n\n您能告诉我您是否需要这些产品的更多信息，或者您有其他问题吗？\n"
+      },
+      {
+        "query": "这个很好", // 用户输入：确认
+        "expected_tool_use": [ // 预期工具使用
+          {
+            "tool_name": "transfer_to_agent", // 工具：转移到 Agent
+            "tool_input": {
+              "agent_name": "brand_search_optimization" // 输入：目标 Agent (根 Agent)
+            }
+          },
+          {
+            "tool_name": "transfer_to_agent", // 工具：转移到 Agent
+            "tool_input": {
+              "agent_name": "comparison_root_agent" // 输入：目标 Agent (比较根 Agent)
+            }
+          },
+          {
+            "tool_name": "transfer_to_agent", // 工具：转移到 Agent
+            "tool_input": {
+              "agent_name": "comparison_generator_agent" // 输入：目标 Agent (比较生成器 Agent)
+            }
+          },
+          {
+            "tool_name": "transfer_to_agent", // 工具：转移到 Agent
+            "tool_input": {
+              "agent_name": "comparison_critic_agent" // 输入：目标 Agent (比较评论家 Agent)，这里预期会先生成再评论，所以有两个 transfer
+            }
+          }
+        ],
+        "expected_intermediate_agent_responses": [ // 预期中间 Agent 响应
+          {
+            "author": "brand_search_optimization", // 发言者：根 Agent
+            "text": "太好了！既然我有了“童鞋”的搜索结果，我将对标题进行比较。\n\n" // 响应文本
+          }
+        ],
+        // 预期最终 Agent 回复（来自 comparison_root_agent，包含了比较报告）
+        "reference": "我可以将从搜索结果中收集到的标题与品牌“BSOAgentTestBrand”的产品标题进行比较。\n以下是比较报告：\n\n| **BSOAgentTestBrand 标题** | **搜索结果标题**                           | **分析与建议**                                                                                                                               |\n|--------------------------|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|\n| 儿童慢跑鞋               | Nike Kids' Flex Runner 3 Shoes             | **缺失关键词:** \"Nike\" \"Flex Runner 3\" ; 考虑在标题中包含竞争对手品牌或相关关键词，如 '运动鞋' 或 '跑鞋'。                                 |\n| 闪光运动鞋             | Kids adidas Racer TR23 Shoes Kids          | **缺失关键词:** \"Adidas\" \"Racer TR23\" \"Shoes\"; 包含特定的型号名称可以提高针对搜索这些型号的用户的定位精度。                               |\n| 校鞋                     | Nike Kids' Court Borough Low Recraft Shoes | **缺失关键词:** \"Nike\" \"Court Borough\" \"Low\" \"Recraft\" ; 考虑使用更接近特定产品类型常见搜索词的标题。                                       |\n\n**建议总结：**\n\n*   **包含品牌名称：** 将品牌名称（Nike, Adidas）添加到标题中。\n*   **包含型号名称：** 在标题中使用特定的型号名称（Flex Runner 3, Racer TR23, Court Borough, Low, Recraft）。\n*   **添加关键词：** 考虑在相关的标题中添加“运动鞋”、“跑鞋”、“闪光”或“学校”等关键词，以提高一般搜索可见性。\n"
+      }
+    ],
+    "initial_state": { // 初始会话状态
+      "session": {} // 会话状态为空
+    }
+  }
+]
+

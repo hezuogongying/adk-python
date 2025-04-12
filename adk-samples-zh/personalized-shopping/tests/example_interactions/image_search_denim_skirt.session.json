@@ -1,0 +1,37 @@
+
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import os
+
+from google.adk.evaluation.agent_evaluator import AgentEvaluator # 导入 ADK 评估器
+import dotenv # 用于加载 .env 文件
+import pytest # 测试框架
+
+
+@pytest.fixture(scope="session", autouse=True)
+def load_env():
+    """(自动执行的会话级 fixture) 加载 .env 文件中的环境变量"""
+    dotenv.load_dotenv()
+
+
+def test_tools():
+    """测试 Agent 在几个示例上的基本能力。"""
+    AgentEvaluator.evaluate(
+        "personalized_shopping", # 要评估的 Agent 模块名称
+        os.path.join(os.path.dirname(__file__), "tools"), # 包含测试数据的目录路径
+        num_runs=1, # 评估运行次数
+    )
+
+

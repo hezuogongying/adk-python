@@ -1,0 +1,133 @@
+
+[
+  {
+    "query": "转移到行程中模式", // 指令，用于强制 Agent 进入 in_trip 状态
+    "expected_tool_use": [
+      {
+        "tool_name": "transfer_to_agent",
+        "tool_input": {
+          "agent_name":"in_trip_agent" // 预期转移到 in_trip_agent
+        }
+      }
+    ],
+    "expected_intermediate_agent_responses" : [], // 预期在此步骤没有中间 Agent 回复
+    "reference":"好的，我现在负责处理。您的旅行有什么需要我帮忙的吗？我可以提供关于您行程的信息，帮助处理交通事宜，或者提供您正在参观的景点的详细信息。" // 预期 in_trip_agent 的初始回复
+  },
+  {
+    "query": "监控行程", // 指令，要求 Agent 检查行程状态
+    "expected_tool_use": [
+      {
+        "tool_name": "transfer_to_agent",
+        "tool_input": {
+          "agent_name":"trip_monitor_agent" // 预期转移到 trip_monitor_agent
+        }
+      },
+      // 预期 trip_monitor_agent 会调用以下工具检查行程中的各项
+      {
+        "tool_name": "flight_status_check", // 检查第一个航班
+        "tool_input": {
+          "departure_time":"08:00",
+          "flight_number":"AA1234",
+          "flight_date":"2025-06-15",
+          "checkin_time":"07:30" // 注意：原文是 boarding_time，但工具参数名是 checkin_time
+          }
+      },
+      {
+        "tool_name": "flight_status_check", // 检查第二个航班
+        "tool_input": {
+          "departure_time":"16:00",
+          "flight_number":"UA5678",
+          "flight_date":"2025-06-17",
+          "checkin_time":"15:30"
+          }
+      },
+      {
+        "tool_name": "event_booking_check", // 检查第一个需要预订的事件
+        "tool_input": {
+          "event_location":"Space Needle",
+          "event_name":"Space Needle",
+          "event_date":"2025-06-16"
+          }
+      },
+      {
+        "tool_name": "event_booking_check", // 检查第二个需要预订的事件
+        "tool_input": {
+          "event_date":"2025-06-17",
+          "event_location":"Museum of Pop Culture (MoPOP)",
+          "event_name":"Museum of Pop Culture (MoPOP)"
+          }
+      },
+      {
+        "tool_name": "weather_impact_check", // 检查第一个可能受天气影响的活动
+        "tool_input": {
+          "activity_date":"2025-06-16",
+          "activity_location":"Pike Place Market",
+          "activity_name":"Visit Pike Place Market"
+          }
+      },
+      {
+        "tool_name": "weather_impact_check", // 检查第二个可能受天气影响的活动
+        "tool_input": {
+          "activity_location":"Ivar's Acres of Clams",
+          "activity_name":"Lunch at Ivar's Acres of Clams",
+          "activity_date":"2025-06-16"
+          }
+      },
+      {
+        "tool_name": "weather_impact_check", // 检查第三个可能受天气影响的活动
+        "tool_input": {
+          "activity_location":"Capitol Hill Neighborhood",
+          "activity_date":"2025-06-16",
+          "activity_name":"Dinner in Capitol Hill"
+          }
+      },
+      {
+        "tool_name": "transfer_to_agent", // 预期 trip_monitor_agent 完成后转回
+        "tool_input": {
+          "agent_name":"in_trip_agent"
+        }
+      }
+    ],
+    // 预期 trip_monitor_agent 在执行过程中的中间回复
+    "expected_intermediate_agent_responses" : [
+      "好的，我将监控您的行程并识别潜在问题。让我们开始吧！\n\n首先，我将识别您行程中不同类型的事件并记录它们的详细信息。\n\n**航班：**\n\n*   **航班 1：** 2025-06-15 从圣地亚哥到西雅图，航班号 AA1234，登机时间 07:30，出发时间 08:00。\n*   **航班 2：** 2025-06-17 从西雅图到圣地亚哥，航班号 UA5678，登机时间 15:30，出发时间 16:00。\n\n**需要预订的事件：**\n\n*   2025-06-16 在太空针塔参观。\n*   2025-06-17 在流行文化博物馆 (MoPOP) 参观。\n\n**可能受天气影响的活动/参观：**\n\n*   2025-06-16 在派克市场参观。\n*   2025-06-16 在 Ivar's Acres of Clams 吃午餐。\n*   2025-06-16 在国会山社区享用晚餐。\n\n现在，我将使用可用工具检查这些事件的状态。", // 第一条中间回复
+      "以下是建议您关注的变更摘要：\n\n*   太空针塔在 2025-06-16 关闭，建议寻找替代方案。\n\n我现在将您转回 `in_trip_agent` 以处理您的其他需求。" // 第二条中间回复
+    ],
+    // 预期 in_trip_agent 在接收到监控结果后的最终回复
+    "reference": "好的。看起来太空针塔在 2025 年 6 月 16 日关闭。您需要我帮您找一个那段时间的替代活动吗？"
+  },
+  {
+    // 指令，要求 Agent 记住一个特定的日期时间
+    "query": "记住日期 '2025-06-16 12:45:00' 并将其存储在变量 'itinerary_datetime' 中",
+    "expected_tool_use": [
+      {
+        "tool_name": "memorize", // 预期调用 memorize 工具
+        "tool_input": {
+          "key":"itinerary_datetime", // 存储的键
+          "value":"2025-06-16 12:45:00" // 存储的值
+          }
+      }
+    ],
+    "expected_intermediate_agent_responses" : [],
+    "reference":"好的。我已将日期 '2025-06-16 12:45:00' 存储在变量 'itinerary_datetime' 中。"
+  },
+  {
+    "query": "调用 day_of 获取交通帮助", // 指令，要求获取当天的交通建议
+    "expected_tool_use": [
+      {
+        "tool_name": "day_of_agent", // 预期调用 day_of_agent 工具
+        "tool_input": {
+          "request":"help" // 传递给 day_of_agent 的请求
+        }
+      }
+    ],
+    "expected_intermediate_agent_responses" : [],
+    // 预期 day_of_agent 的回复（它会根据记住的 itinerary_datetime 和行程计算）
+    "reference":"好的，看起来您可以从 Ivar's Acres of Clams 步行到太空针塔，大约需要 25-30 分钟，或者乘坐网约车会快得多。"
+  }
+]
+```
+**文件说明:** 这是 Travel Concierge Agent 在“行程中 (in-trip)”阶段的评估数据集。它包含用户在旅行期间可能提出的查询或由系统触发的监控任务。测试用例检查 Agent 是否能正确调用 `trip_monitor_agent` 来检查航班、预订和天气，并处理返回的建议（如太空针塔关闭）。它还测试了 `memorize` 工具是否能正确存储模拟的当前时间，以及 `day_of_agent` 是否能根据该时间和行程提供正确的交通建议。数据集使用了 `itinerary_seattle_example.json` 作为初始状态。
+
+---
+

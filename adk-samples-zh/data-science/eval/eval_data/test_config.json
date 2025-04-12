@@ -1,0 +1,23 @@
+
+[
+  {
+    "query": "你有哪些数据？", // 用户查询
+    "expected_tool_use": [], // 预期的工具使用（无）
+    "expected_intermediate_agent_responses": [], // 预期的中间 agent 响应（无）
+    "reference": "我有权限访问两个表：`train` 和 `test`。这两个表都包含有关贴纸销售的信息，包括日期、国家、商店、产品和销售数量。`train` 表包含历史销售数据，而 `test` 表包含更近期的销售数据。\n" // 预期参考答案
+  },
+  {
+    "query": "test 表中有哪些国家？", // 用户查询
+    "expected_tool_use": [ // 预期的工具使用
+      {
+        "tool_name": "call_db_agent", // 工具名称：调用数据库 agent
+        "tool_input": { // 工具输入
+          "question": "test 表中有哪些不同的国家？" // 传递给数据库 agent 的问题
+        }
+      }
+    ],
+    "expected_intermediate_agent_responses": [], // 预期的中间 agent 响应（无）
+    "reference": "**结果:** test 表中不同的国家有加拿大、芬兰、意大利、肯尼亚、挪威和新加坡。\n\n**解释:** 我查询了 `test` 表以查找 `country` 列中所有不同的值。查询返回了国家列表：加拿大、芬兰、意大利、肯尼亚、挪威和新加坡。\n" // 预期参考答案
+  }
+]
+
